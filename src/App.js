@@ -8,7 +8,8 @@ class App extends Component {
         console.log("1")
         super();
         this.state = {
-            monsters: []
+            monsters: [],
+            searchField: ''
         }
         console.log('constructor')
     }
@@ -24,22 +25,39 @@ class App extends Component {
             .then(response => response.json()) //whatever is returned from here will be passed further
             .then((users) => this.setState(() => {
                 return {monsters: users}
-            }, () => {console.log(this.state)}))
+            }, () => {
+                console.log(this.state)
+            }))
     }
 
 
     render() {
         console.log("render")
         //render runs second after constructor
+        const filteredMonsters = this.state.monsters.filter((monster) => {
+            return monster.name.toLocaleLowerCase().includes(this.state.searchField);
+        })
+
         return (
             <div className="App">
+                <input className='search-box' type='search' placeholder='search monsters' onChange={(event) => {
+                    // this.setState({monsters: this.state.monsters.filter( monster => { return monster.name.includes(event.target.value)})})
+                    console.log(event.target.value)
+                    const searchField = event.target.value.toLocaleLowerCase();
+
+
+                    this.setState(() => {
+                        return {searchField}
+                    })
+                }}/>
                 {
-                    this.state.monsters.map((monster) => {
+                    filteredMonsters.map((monster) => {
                         return <div key={monster.name}>
                             <h1>{monster.name}</h1>
                         </div>;
                     })
                 }
+
             </div>
         );
     }
